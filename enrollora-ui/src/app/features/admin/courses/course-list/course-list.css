@@ -545,3 +545,16 @@
   border-radius: 7px;
   cursor: pointer;
 }
+.btn-edit {
+  padding: 9px 18px;
+  border: 1px solid #64748b;
+  border-radius: 7px;
+  background: transparent;
+  color: #5d728e;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.btn-edit:hover {
+  background: #cdd7e2;
+}

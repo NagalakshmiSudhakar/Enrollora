@@ -79,6 +79,66 @@ export class CourseListComponent implements OnInit {
     });
   }
 
+  showEditForm = signal(false);
+isUpdating = signal(false);
+selectedCourseId: number | null = null;
+
+editCourse: SaveCourseRequest = {
+  courseName: '',
+  duration: '',
+  fees: 0,
+  capacity: 1,
+  isActive: true,
+};
+openEditForm(course: CourseResponse): void {
+  this.selectedCourseId = course.courseId;
+
+  this.editCourse = {
+    courseName: course.courseName,
+    duration: course.duration,
+    fees: course.fees,
+    capacity: course.capacity,
+    isActive: course.isActive,
+  };
+
+  this.errorMessage.set('');
+  this.successMessage.set('');
+  this.showEditForm.set(true);
+}
+
+closeEditForm(): void {
+  this.showEditForm.set(false);
+  this.selectedCourseId = null;
+}
+
+updateCourse(): void {
+  if (this.selectedCourseId === null) return;
+
+  this.isUpdating.set(true);
+  this.errorMessage.set('');
+
+  this.courseService
+    .updateCourse(this.selectedCourseId, this.editCourse)
+    .subscribe({
+      next: () => {
+        this.showEditForm.set(false);
+        this.selectedCourseId = null;
+        this.successMessage.set('Course updated successfully.');
+        this.loadCourses();
+        this.isUpdating.set(false);
+      },
+      error: (error) => {
+        console.error('Error updating course:', error);
+        this.errorMessage.set(
+          error.error?.detail ||
+          error.error?.message ||
+          'Unable to update course.',
+        );
+        this.isUpdating.set(false);
+      },
+    });
+}
+
   loadCourses(): void {
     this.isLoading.set(true);
     this.errorMessage.set('');
